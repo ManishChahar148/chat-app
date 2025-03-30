@@ -13,7 +13,7 @@ const ChatRoom = () => {
   const {
     messages,
     roomId,
-    isConnected,
+    connectionState,
     userData,
     typingData,
     sendMessage,
@@ -25,13 +25,12 @@ const ChatRoom = () => {
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!roomId && isConnected) {
-      console.log("joining room effect", roomId, existingRoomId);
+    if (!roomId && connectionState === 'connected') {
       setTimeout(() => {
         existingRoomId && joinRoom(existingRoomId, userName);
-      }, 5000);
+      }, 3000);
     }
-  }, [isConnected]);
+  }, [connectionState]);
 
   // Auto-scroll to the bottom when messages update
   useEffect(() => {
@@ -45,7 +44,6 @@ const ChatRoom = () => {
 
   const onSubmitMessage = (e: any) => {
     e.preventDefault();
-    console.log("submit");
     sendMessage(messageInput);
     setMessageInput("");
   };
@@ -60,6 +58,7 @@ const ChatRoom = () => {
           ref={chatContainerRef}
           className="h-96 overflow-y-auto border-b mb-2 p-2"
         >
+          {connectionState === 'connecting' && <div className="text-black">Connecting...</div>}
           {messages.map((msg, index) => {
             const isCurrentUserText = userData.name === msg.data.userNickname;
             const displayName = isCurrentUserText

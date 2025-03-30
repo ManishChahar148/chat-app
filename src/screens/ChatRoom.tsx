@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "../Context/ChatContext";
 import { useLocation, useParams } from "react-router-dom";
+import { Button } from "../components/Button";
 
 const ChatRoom = () => {
   const [messageInput, setMessageInput] = useState("");
@@ -9,7 +10,8 @@ const ChatRoom = () => {
   const params = new URLSearchParams(location.search);
   const userName = params.get("name") || "";
 
-  const { messages, sendMessage, roomId, joinRoom, isConnected } = useChat();
+  const { messages, sendMessage, roomId, joinRoom, isConnected, userData } =
+    useChat();
 
   // Ref for the chat container
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -47,18 +49,39 @@ const ChatRoom = () => {
         {/* Chat Container with Ref */}
         <div
           ref={chatContainerRef}
-          className="h-64 overflow-y-auto border-b mb-2 p-2"
+          className="h-96 overflow-y-auto border-b mb-2 p-2"
         >
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`p-2 ${
-                msg.data.isSystemMessage ? "text-gray-500" : "text-black"
-              }`}
-            >
-              <strong>{msg.data.userNickname}:</strong> {msg.data.body}
-            </div>
-          ))}
+          {messages.map((msg, index) => {
+            const isCurrentUserText = userData.name === msg.data.userNickname;
+            const displayName = isCurrentUserText
+              ? "You"
+              : msg.data.userNickname;
+            const isSystemMessage = msg.data.isSystemMessage;
+            return (
+              <div
+                key={index}
+                className={`p-2
+                ${isSystemMessage ? "text-gray-500 !text-center" : "text-black"}
+                ${isCurrentUserText ? "text-right" : "text-left"}
+                `}
+              >
+                <span
+                  className={`text-xs ${isCurrentUserText ? "pr-2" : "pl-2"}`}
+                >
+                  {displayName}
+                </span>{" "}
+                <br />
+                <span
+                  className={`${
+                    isSystemMessage ? "bg-transparent" : "bg-blue-100"
+                  } px-3 py-2 rounded-full mt-4 text-xs`}
+                >
+                  {" "}
+                  {msg.data.body}
+                </span>
+              </div>
+            );
+          })}
         </div>
 
         {/* Message Input */}
@@ -70,12 +93,7 @@ const ChatRoom = () => {
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
           />
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-          >
-            Send
-          </button>
+          <Button type="submit">Send</Button>
         </form>
       </div>
     </div>

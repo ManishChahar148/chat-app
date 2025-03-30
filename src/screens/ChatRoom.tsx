@@ -49,11 +49,6 @@ const ChatRoom = () => {
     sendMessage(messageInput);
     setMessageInput("");
   };
-
-  if(userData?.userId) {
-    debugger;
-    console.log('userData', userData)
-  }
   // const onlyCurrentUserTyping = (typingData?.usersTyping?.length === 1) && typingData?.usersTyping?.includes(userData?.userId)
 
   return (
@@ -97,7 +92,7 @@ const ChatRoom = () => {
             );
           })}
         </div>
-        
+
         {/* Message Input */}
         <p className="text-black text-xs pl-2">
           {typingData?.anyoneTyping ? "Typing..." : ""}

@@ -10,8 +10,16 @@ const ChatRoom = () => {
   const params = new URLSearchParams(location.search);
   const userName = params.get("name") || "";
 
-  const { messages, sendMessage, roomId, joinRoom, isConnected, userData } =
-    useChat();
+  const {
+    messages,
+    roomId,
+    isConnected,
+    userData,
+    typingData,
+    sendMessage,
+    joinRoom,
+    setTypingPresence,
+  } = useChat();
 
   // Ref for the chat container
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -41,6 +49,11 @@ const ChatRoom = () => {
     sendMessage(messageInput);
     setMessageInput("");
   };
+
+  if(userData?.userId) {
+    debugger;
+    console.log('userData', userData)
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
@@ -83,8 +96,11 @@ const ChatRoom = () => {
             );
           })}
         </div>
-
+        
         {/* Message Input */}
+        <p className="text-black text-xs pl-2">
+          {typingData?.anyoneTyping ? "Someone is typing..." : ""}
+        </p>
         <form onSubmit={onSubmitMessage} className="flex gap-2 mt-2">
           <input
             type="text"
@@ -92,6 +108,8 @@ const ChatRoom = () => {
             placeholder="Type a message..."
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
+            onFocus={() => setTypingPresence(true)}
+            onBlur={() => setTypingPresence(false)}
           />
           <Button type="submit">Send</Button>
         </form>

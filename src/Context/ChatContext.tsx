@@ -15,6 +15,8 @@ interface ChatContextType {
   joinRoom: (message: string, name: string) => void;
   isCreatingRoom: boolean;
   userData: any;
+  setTypingPresence: (value: boolean) => void;
+  typingData: any;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -28,27 +30,33 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [messages, setMessages] = useState<any>([]);
   const [roomId, setRoomId] = useState("");
   const [userData, setUserData] = useState<any>();
+  const [typingData, setTypingData] = useState<any>();
+
 
   const handleReceivedMessage = (message: any) => {
     console.log("MESSAGE RECEIVED", message, JSON.stringify(message));
+    console.log("TYPE=>>>>>", message.type);
+
     if (message.type === "userId") {
       setUserData(message.data);
     }
-    if ((message.type = "sendMessage" && message.data.body)) {
+    if (message.type === SocketMessageTypes.SEND_MESSAGE && message.data.body) {
       // console.log('adding to messages')
       setMessages((prevMsgList: any) => [...prevMsgList, message]);
     }
-    if (message.type === undefined) {
-      console.log("user list => ", message);
+    if (message.type === SocketMessageTypes.SET_TYPING_PRESENCE) {
+      console.log("Typing presence", message.data);
+      setTypingData(message.data);
+    }
+    if (message.type === "userList") {
+      // console.log("user list => ", message);
     }
   };
-
-  console.log("all messages", messages);
 
   const eventHandler: SocketEventHandler = {
     onConnectionReady: () => {
       setIsConnected(true);
-      console.log("connetced");
+      // console.log("connetced");
     },
     onClose: () => {
       setIsConnected(false);
@@ -73,7 +81,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       .catch(() => {
         setIsCreatingRoom(false);
       });
-    console.log("Chat Room Created: ", res);
+    // console.log("Chat Room Created: ", res);
   };
 
   const sendMessage = (message: string) => {
@@ -81,14 +89,22 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       body: message,
     });
 
-    console.log("Message Sent: ", msg);
+    // console.log("Message Sent: ", msg);
   };
 
   const joinRoom = (roomId: string, name: string) => {
     setUserData({ name: name });
     const res = client?.joinChatRoom(name, roomId);
-    console.log("JOINED ROOM : ", res);
+    // console.log("JOINED ROOM : ", res);
   };
+
+  const setTypingPresence = (value: boolean) => {
+    client?.sendMessage(SocketMessageTypes.SET_TYPING_PRESENCE, {
+      typing: value,
+    });
+  };
+
+  // console.log(typingData, 'typingData in comp')
 
   return (
     <ChatContext.Provider
@@ -102,6 +118,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         createChat,
         sendMessage,
         joinRoom,
+        setTypingPresence,
+        typingData,
       }}
     >
       {children}

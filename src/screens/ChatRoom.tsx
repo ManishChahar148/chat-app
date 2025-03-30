@@ -54,6 +54,7 @@ const ChatRoom = () => {
     debugger;
     console.log('userData', userData)
   }
+  // const onlyCurrentUserTyping = (typingData?.usersTyping?.length === 1) && typingData?.usersTyping?.includes(userData?.userId)
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
@@ -99,7 +100,7 @@ const ChatRoom = () => {
         
         {/* Message Input */}
         <p className="text-black text-xs pl-2">
-          {typingData?.anyoneTyping ? "Someone is typing..." : ""}
+          {typingData?.anyoneTyping ? "Typing..." : ""}
         </p>
         <form onSubmit={onSubmitMessage} className="flex gap-2 mt-2">
           <input

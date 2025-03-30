@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { Button } from "./Button";
 
 const JoinRoomPopup = ({ isOpen, onClose, onJoin }: any) => {
   const [userName, setUserName] = useState("");
@@ -24,8 +24,18 @@ const JoinRoomPopup = ({ isOpen, onClose, onJoin }: any) => {
           onChange={(e) => setRoomId(e.target.value)}
         />
         <div className="flex justify-end space-x-2">
-          <button className="cursor-pointer px-4 py-2 bg-gray-400 rounded" onClick={onClose}>Cancel</button>
-          <button disabled={!userName ||!roomId} className="cursor-pointer px-4 py-2 bg-blue-500 text-white rounded" onClick={() => onJoin(userName, roomId)}>Join</button>
+          <Button
+            className="cursor-pointer px-4 py-2 bg-gray-400 rounded"
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            disabled={!userName || !roomId}
+            onClick={() => onJoin(userName, roomId)}
+          >
+            Join
+          </Button>
         </div>
       </div>
     </div>

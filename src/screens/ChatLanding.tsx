@@ -22,7 +22,7 @@ const ChatLanding = () => {
       <h1 className="text-2xl text-blue-500 font-bold mb-4">
         Chat Application
       </h1>
-      <div className="space-x-4">
+      <div className="flex flex-col md:flex-row gap-6">
         <Button className="w-48" onClick={() => createChat()}>
           {!isCreatingRoom ? "Start New Group Chat" : "Creating Party..."}
         </Button>

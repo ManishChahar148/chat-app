@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import {
+  SessionChatMessage,
   SocketEventHandler,
   SocketMessageTypes,
   TelepartyClient,
@@ -8,7 +9,7 @@ import {
 interface ChatContextType {
   client: TelepartyClient | null;
   connectionState: string;
-  messages: any[];
+  messages: SessionChatMessage[];
   createChat: () => void;
   roomId: string;
   sendMessage: (message: string) => void;
@@ -16,7 +17,7 @@ interface ChatContextType {
   isCreatingRoom: boolean;
   userData: any;
   setTypingPresence: (value: boolean) => void;
-  typingData: any;
+  typingData: { anyoneTyping: boolean; usersTyping: string[] };
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -25,13 +26,12 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [client, setClient] = useState<TelepartyClient | null>(null);
-  const [connectionState, setIsConnectionState] = useState('');
+  const [connectionState, setIsConnectionState] = useState("");
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [messages, setMessages] = useState<any>([]);
   const [roomId, setRoomId] = useState("");
   const [userData, setUserData] = useState<any>();
   const [typingData, setTypingData] = useState<any>();
-
 
   const handleReceivedMessage = (message: any) => {
     console.log("MESSAGE RECEIVED", message, JSON.stringify(message));
@@ -47,24 +47,21 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log("Typing presence", message.data);
       setTypingData(message.data);
     }
-    if (message.type === "userList") {
-      // console.log("user list => ", message);
-    }
   };
 
   const eventHandler: SocketEventHandler = {
     onConnectionReady: () => {
-      setIsConnectionState('connected');
+      setIsConnectionState("connected");
     },
     onClose: () => {
-      setIsConnectionState('');
+      setIsConnectionState("");
     },
     onMessage: handleReceivedMessage,
   };
 
   useEffect(() => {
     const newClient = new TelepartyClient(eventHandler);
-    setIsConnectionState('connecting');
+    setIsConnectionState("connecting");
     setClient(newClient);
   }, []);
 

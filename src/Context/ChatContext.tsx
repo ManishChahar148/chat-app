@@ -18,6 +18,7 @@ interface ChatContextType {
   userData: any;
   setTypingPresence: (value: boolean) => void;
   typingData: { anyoneTyping: boolean; usersTyping: string[] };
+  userList: any[];
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -32,6 +33,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [roomId, setRoomId] = useState("");
   const [userData, setUserData] = useState<any>();
   const [typingData, setTypingData] = useState<any>();
+  const [userList, setUserList] = useState([]);
+
+  console.log('userList===', userList)
 
   const handleReceivedMessage = (message: any) => {
     console.log("MESSAGE RECEIVED", message, JSON.stringify(message));
@@ -46,6 +50,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     if (message.type === SocketMessageTypes.SET_TYPING_PRESENCE) {
       console.log("Typing presence", message.data);
       setTypingData(message.data);
+    }
+    if(message.type === 'userList') {
+      setUserList(message.data)
     }
   };
 
@@ -67,7 +74,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const createChat = (userName: string) => {
     setIsCreatingRoom(true);
-    // setting fixed name for create chat for now
     setUserData({ name: userName });
 
     client
@@ -112,6 +118,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         joinRoom,
         setTypingPresence,
         typingData,
+        userList,
       }}
     >
       {children}

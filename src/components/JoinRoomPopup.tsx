@@ -1,44 +1,48 @@
 import { useState } from "react";
 import { Button } from "./Button";
+import { Input, Modal } from "antd";
+import { useChat } from "../Context/ChatContext";
 
-const JoinRoomPopup = ({ isOpen, onClose, onJoin }: any) => {
+const JoinRoomPopup = (props: any) => {
   const [userName, setUserName] = useState("");
   const [roomId, setRoomId] = useState("");
 
-  if (!isOpen) return null;
+  const { handleCancel, isModalOpen, onJoinRoom } = props;
+  const { isCreatingRoom } = useChat();
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/20 bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <h2 className="text-xl font-bold mb-4 text-blue-500">Join Room</h2>
-        <input
-          type="text"
-          placeholder="Enter Name"
-          className="w-full p-2 border text-black border-blue-400 rounded mb-2"
-          onChange={(e) => setUserName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Enter Room ID"
-          className="w-full p-2 border text-black border-blue-400 rounded mb-4"
-          onChange={(e) => setRoomId(e.target.value)}
-        />
-        <div className="flex justify-end space-x-2">
-          <Button
-            className="cursor-pointer px-4 py-2 bg-gray-400 rounded"
-            onClick={onClose}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={!userName || !roomId}
-            onClick={() => onJoin(userName, roomId)}
-          >
-            Join
-          </Button>
+    <Modal
+      centered
+      title="Join Room"
+      open={isModalOpen}
+      onOk={() => onJoinRoom(userName, roomId)}
+      onCancel={handleCancel}
+      okButtonProps={{
+        disabled: !userName || !roomId,
+        loading: isCreatingRoom,
+      }}
+    >
+      <div className="mt-6">
+        <div>
+          <label className="text-sm">Your Name</label>
+          <Input
+            className="capitalize"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            placeholder="Enter your name"
+          />
+        </div>
+        <div className="mt-4">
+          <label className="text-sm">Room Id</label>
+          <Input
+            className="capitalize"
+            value={roomId}
+            onChange={(e) => setRoomId(e.target.value)}
+            placeholder="Enter your name"
+          />
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

@@ -40,9 +40,10 @@ const ChatLanding = () => {
           </Button>
         </div>
         <JoinRoomPopup
-          isOpen={joinRoomPopup}
+          isModalOpen={joinRoomPopup}
           onClose={() => setJoinRoomPopup(false)}
-          onJoin={onJoinRoom}
+          onJoinRoom={onJoinRoom}
+          handleCancel={() => setJoinRoomPopup(false)}
         ></JoinRoomPopup>
       </div>
 

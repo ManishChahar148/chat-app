@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button } from "../components/Button";
+// import { Button } from "../components/Button";
 import { useChat } from "../Context/ChatContext";
 import { useNavigate } from "react-router-dom";
 import JoinRoomPopup from "../components/JoinRoomPopup";
 import CreateRoomPopup from "../components/CreateRoomPopup";
+import { Button } from "antd";
 
 const ChatLanding = () => {
   const { createChat, roomId, isCreatingRoom } = useChat();
@@ -31,11 +32,12 @@ const ChatLanding = () => {
         <div className="flex flex-col md:flex-row gap-6">
           <Button
             className="w-48"
+            type="primary"
             onClick={() => setIsCreateRoomPopupVisible(true)}
           >
             {!isCreatingRoom ? "Start New Group Chat" : "Creating Party..."}
           </Button>
-          <Button className="w-48" onClick={() => setJoinRoomPopup(true)}>
+          <Button type="primary" className="w-48" onClick={() => setJoinRoomPopup(true)}>
             Join Chat
           </Button>
         </div>

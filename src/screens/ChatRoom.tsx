@@ -20,6 +20,7 @@ const ChatRoom = () => {
     sendMessage,
     joinRoom,
     setTypingPresence,
+    userList,
   } = useChat();
 
   // Ref for the chat container
@@ -51,6 +52,7 @@ const ChatRoom = () => {
   const onlyCurrentUserTyping =
     typingData?.usersTyping?.length === 1 &&
     typingData?.usersTyping?.includes(userData?.data?.userId);
+
   const isChatConnecting =
     connectionState === "connecting" || messages.length === 0;
   console.log(
@@ -107,9 +109,24 @@ const ChatRoom = () => {
 
         {/* Message Input */}
         <p className="text-black text-xs pl-2">
-          {!onlyCurrentUserTyping && typingData?.anyoneTyping
-            ? "Typing..."
-            : ""}
+          {!onlyCurrentUserTyping && typingData?.anyoneTyping ? (
+            <span>
+              {userList
+                .filter((user) =>
+                  typingData?.usersTyping?.includes(user.socketConnectionId) && user.socketConnectionId !== userData?.data?.userId
+                )
+                .slice(0, 1)
+                .map((user) => (
+                  <span>{user?.userSettings?.userNickname}</span>
+                ))}{" "}
+
+              {typingData.usersTyping.length > 1 && !typingData?.usersTyping?.includes(userData?.data?.userId) && `+${typingData.usersTyping.length - 1} other `}
+
+              typing...
+            </span>
+          ) : (
+            ""
+          )}
         </p>
         <form onSubmit={onSubmitMessage} className="flex gap-2 mt-2">
           <Input

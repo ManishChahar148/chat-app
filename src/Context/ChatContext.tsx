@@ -35,13 +35,13 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [typingData, setTypingData] = useState<any>();
   const [userList, setUserList] = useState([]);
 
-  console.log('userList===', userList)
+  console.log("userList===", userList);
 
   const handleReceivedMessage = (message: any) => {
     console.log("MESSAGE RECEIVED", message, JSON.stringify(message));
 
     if (message.type === "userId") {
-      setUserData(message.data);
+      setUserData((prev: any) => ({ ...prev, data: message.data }));
     }
     if (message.type === SocketMessageTypes.SEND_MESSAGE && message.data.body) {
       // console.log('adding to messages')
@@ -51,8 +51,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log("Typing presence", message.data);
       setTypingData(message.data);
     }
-    if(message.type === 'userList') {
-      setUserList(message.data)
+    if (message.type === "userList") {
+      setUserList(message.data);
     }
   };
 
@@ -74,7 +74,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const createChat = (userName: string) => {
     setIsCreatingRoom(true);
-    setUserData({ name: userName });
+    setUserData((prev: any) => ({ ...prev, name: userName }));
 
     client
       ?.createChatRoom(userName)
@@ -94,7 +94,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const joinRoom = (roomId: string, name: string) => {
-    setUserData({ name: name });
+    setUserData((prev: any) => ({ ...prev, name: name }));
     client?.joinChatRoom(name, roomId);
   };
 

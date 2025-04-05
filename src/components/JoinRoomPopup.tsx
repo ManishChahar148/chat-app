@@ -4,10 +4,9 @@ import { Input, Modal } from "antd";
 import { useChat } from "../Context/ChatContext";
 
 const JoinRoomPopup = (props: any) => {
-  const [userName, setUserName] = useState("");
   const [roomId, setRoomId] = useState("");
 
-  const { handleCancel, isModalOpen, onJoinRoom } = props;
+  const { handleCancel, isModalOpen, onJoinRoom, userName, setUserName } = props;
   const { isCreatingRoom } = useChat();
 
   return (

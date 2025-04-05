@@ -15,7 +15,7 @@ const ChatLanding = () => {
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    if (roomId) navigate(`/chat/${roomId}`);
+    if (roomId) navigate(`/chat/${roomId}/?name=${userName}`);
   }, [roomId]);
 
   const onJoinRoom = (userName: string, roomId: string) => {
@@ -44,6 +44,8 @@ const ChatLanding = () => {
           onClose={() => setJoinRoomPopup(false)}
           onJoinRoom={onJoinRoom}
           handleCancel={() => setJoinRoomPopup(false)}
+          userName={userName}
+          setUserName={setUserName}
         ></JoinRoomPopup>
       </div>
 

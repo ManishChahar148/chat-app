@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "../Context/ChatContext";
 import { useLocation, useParams } from "react-router-dom";
-import { Button } from "../components/Button";
+// import { Button } from "../components/Button";
+import { Button, Input } from "antd";
 
 const ChatRoom = () => {
   const [messageInput, setMessageInput] = useState("");
@@ -25,7 +26,7 @@ const ChatRoom = () => {
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!roomId && connectionState === 'connected') {
+    if (!roomId && connectionState === "connected") {
       setTimeout(() => {
         existingRoomId && joinRoom(existingRoomId, userName);
       }, 3000);
@@ -47,10 +48,20 @@ const ChatRoom = () => {
     sendMessage(messageInput);
     setMessageInput("");
   };
-  // const onlyCurrentUserTyping = (typingData?.usersTyping?.length === 1) && typingData?.usersTyping?.includes(userData?.userId)
+  const onlyCurrentUserTyping =
+    typingData?.usersTyping?.length === 1 &&
+    typingData?.usersTyping?.includes(userData?.data?.userId);
+  const isChatConnecting =
+    connectionState === "connecting" || messages.length === 0;
+  console.log(
+    onlyCurrentUserTyping,
+    "onlyCurrentUserTyping",
+    typingData?.usersTyping,
+    userData
+  );
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 md:p-4">
       <h1 className="text-2xl text-blue-500 font-bold mb-4">Chat Room</h1>
       <div className="w-full max-w-lg bg-white p-4 shadow-md rounded-lg flex flex-col">
         {/* Chat Container with Ref */}
@@ -58,13 +69,15 @@ const ChatRoom = () => {
           ref={chatContainerRef}
           className="h-96 overflow-y-auto border-b mb-2 p-2"
         >
-          {connectionState === 'connecting' && <div className="text-black">Connecting...</div>}
+          {isChatConnecting && (
+            <div className="text-black text-center">Loading chats...</div>
+          )}
           {messages.map((msg, index) => {
             const isCurrentUserText = userData.name === msg.data.userNickname;
             const displayName = isCurrentUserText
               ? "You"
-              : msg.data.userNickname;
-            const isSystemMessage = msg.data.isSystemMessage;
+              : msg?.data?.userNickname;
+            const isSystemMessage = msg?.data?.isSystemMessage;
             return (
               <div
                 key={index}
@@ -94,19 +107,23 @@ const ChatRoom = () => {
 
         {/* Message Input */}
         <p className="text-black text-xs pl-2">
-          {typingData?.anyoneTyping ? "Typing..." : ""}
+          {!onlyCurrentUserTyping && typingData?.anyoneTyping
+            ? "Typing..."
+            : ""}
         </p>
         <form onSubmit={onSubmitMessage} className="flex gap-2 mt-2">
-          <input
+          <Input
             type="text"
-            className="flex-1 border text-black border-blue-300 p-2 rounded-lg"
             placeholder="Type a message..."
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
             onFocus={() => setTypingPresence(true)}
             onBlur={() => setTypingPresence(false)}
+            disabled={isChatConnecting}
           />
-          <Button type="submit">Send</Button>
+          <Button type="primary" loading={isChatConnecting}>
+            {!isChatConnecting && "Send"}
+          </Button>
         </form>
       </div>
     </div>

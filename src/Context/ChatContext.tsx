@@ -10,7 +10,7 @@ interface ChatContextType {
   client: TelepartyClient | null;
   connectionState: string;
   messages: SessionChatMessage[];
-  createChat: () => void;
+  createChat: (userName: string) => void;
   roomId: string;
   sendMessage: (message: string) => void;
   joinRoom: (message: string, name: string) => void;
@@ -65,13 +65,13 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     setClient(newClient);
   }, []);
 
-  const createChat = () => {
+  const createChat = (userName: string) => {
     setIsCreatingRoom(true);
     // setting fixed name for create chat for now
-    setUserData({ name: "Manish" });
+    setUserData({ name: userName });
 
     client
-      ?.createChatRoom("Manish")
+      ?.createChatRoom(userName)
       .then((roomId) => {
         setIsCreatingRoom(false);
         setRoomId(roomId);

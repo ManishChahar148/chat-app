@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Button, Input, Modal } from "antd";
+import { Input, Modal } from "antd";
 import { useChat } from "../Context/ChatContext";
 
 interface Props {

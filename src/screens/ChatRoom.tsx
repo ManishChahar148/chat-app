@@ -74,7 +74,7 @@ const ChatRoom = () => {
           {isChatConnecting && (
             <div className="text-black text-center">Loading chats...</div>
           )}
-          {messages.map((msg, index) => {
+          {messages.map((msg: any, index) => {
             const isCurrentUserText = userData.name === msg.data.userNickname;
             const displayName = isCurrentUserText
               ? "You"
@@ -100,7 +100,7 @@ const ChatRoom = () => {
                   } px-3 py-2 rounded-full mt-4 text-xs`}
                 >
                   {" "}
-                  {msg.data.body}
+                  {msg?.data?.body}
                 </span>
               </div>
             );

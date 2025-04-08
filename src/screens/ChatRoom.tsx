@@ -55,12 +55,6 @@ const ChatRoom = () => {
 
   const isChatConnecting =
     connectionState === "connecting" || messages.length === 0;
-  console.log(
-    onlyCurrentUserTyping,
-    "onlyCurrentUserTyping",
-    typingData?.usersTyping,
-    userData
-  );
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 md:p-4">

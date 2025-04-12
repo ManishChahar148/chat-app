@@ -103,28 +103,33 @@ const ChatRoom = () => {
 
         {/* Message Input */}
         <p className="text-black text-xs pl-2">
-          {!onlyCurrentUserTyping && typingData?.anyoneTyping ? (
-            <span>
-              {userList
-                .filter((user) =>
-                  typingData?.usersTyping?.includes(user.socketConnectionId) && user.socketConnectionId !== userData?.data?.userId
-                )
-                .slice(0, 1)
-                .map((user) => (
-                  <span>{user?.userSettings?.userNickname}</span>
-                ))}{" "}
+          {typingData?.anyoneTyping
+            ? (() => {
+                const otherTypingUsers = userList.filter(
+                  (user) =>
+                    typingData.usersTyping.includes(user.socketConnectionId) &&
+                    user.socketConnectionId !== userData?.data?.userId
+                );
 
-              {typingData.usersTyping.length > 1 && !typingData?.usersTyping?.includes(userData?.data?.userId) && `+${typingData.usersTyping.length - 1} other `}
+                if (otherTypingUsers.length === 0) return null;
 
-              typing...
-            </span>
-          ) : (
-            ""
-          )}
+                return (
+                  <span>
+                    {otherTypingUsers[0]?.userSettings?.userNickname}
+                    {otherTypingUsers.length > 1 &&
+                      ` +${otherTypingUsers.length - 1} other`}
+                    {" typing..."}
+                  </span>
+                );
+              })()
+            : null}
         </p>
         <form onSubmit={onSubmitMessage} className="flex gap-2 mt-2">
           <Input
             type="text"
+            style={{
+              fontSize: "16px",
+            }}
             placeholder="Type a message..."
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
@@ -132,7 +137,11 @@ const ChatRoom = () => {
             onBlur={() => setTypingPresence(false)}
             disabled={isChatConnecting}
           />
-          <Button type="primary" loading={isChatConnecting}>
+          <Button
+            onClick={onSubmitMessage}
+            type="primary"
+            loading={isChatConnecting}
+          >
             {!isChatConnecting && "Send"}
           </Button>
         </form>

@@ -5,8 +5,6 @@ import {
   SocketMessageTypes,
   TelepartyClient,
 } from "teleparty-websocket-lib";
-import { SocketMessage } from "teleparty-websocket-lib/lib/SocketMessage";
-
 interface ChatContextType {
   client: TelepartyClient | null;
   connectionState: string;
@@ -36,7 +34,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [typingData, setTypingData] = useState<any>();
   const [userList, setUserList] = useState([]);
 
-  console.log(messages, 'MESSAGES')
+  // console.log(messages, 'MESSAGES')
 
   const handleReceivedMessage = (message: any) => {
 
@@ -44,30 +42,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       setUserData((prev: any) => ({ ...prev, data: message.data }));
     }
     if (message.type === SocketMessageTypes.SEND_MESSAGE && message.data.body) {
-      // console.log('adding to messages')
-      // console.log("messages", messages)
-      // if(messages?.filter((msg: SocketMessage) => {
-      //   console.log(msg.data.messageId,  message.data.messageId, 'COMP===')
-      //   return msg.data.messageId === message.data.messageId
-      // })?.length > 0 ) {
-      //   console.log("duplicate====", message)
-      // };
+      console.log("message received", message.data)
       setMessages((prevMsgList: any) => [...prevMsgList, message]);
-
-      // setMessages((prevMsgList: any[]) => {
-      //   const isDuplicate = prevMsgList.some(
-      //     (msg) => msg?.data?.messageId === message.data.messageId
-      //   );
-    
-      //   if (isDuplicate) {
-      //     console.log("Duplicate message ignored:", message);
-      //     return prevMsgList;
-      //   }
-    
-      //   console.log("Adding new message:", message);
-      //   return [...prevMsgList, message];
-      // });
-
     }
     if (message.type === SocketMessageTypes.SET_TYPING_PRESENCE) {
       console.log("Typing presence", message.data);
@@ -115,16 +91,36 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
-  const joinRoom = async(roomId: string, name: string) => {
-    setUserData((prev: any) => ({ ...prev, name: name }));
-    const resp = await client?.joinChatRoom(name, roomId);
-    const oldMessages = resp?.messages.map(msg => ({data: msg})) || []
-    setMessages((prev: SessionChatMessage[]) => [...oldMessages, ...prev])
-  };
+  // const joinRoom = async(roomId: string, name: string) => {
+  //   setUserData((prev: any) => ({ ...prev, name: name }));
+  //   const resp = await client?.joinChatRoom(name, roomId);
+  //   const oldMessages = resp?.messages.map(msg => ({data: msg})) || [];
+  //   // const oldMessages = []
+  //   console.table("oldMessages", oldMessages)
+  //   setMessages((prev: SessionChatMessage[]) => [...oldMessages, ...prev])
+  // };
 
   const setTypingPresence = (value: boolean) => {
     client?.sendMessage(SocketMessageTypes.SET_TYPING_PRESENCE, {
       typing: value,
+    });
+  };
+
+  const joinRoom = async (roomId: string, name: string) => {
+    setUserData((prev: any) => ({ ...prev, name: name }));
+
+    const resp = await client?.joinChatRoom(name, roomId);
+  
+    const incomingMessages = resp?.messages.map((msg) => ({ data: msg })) || [];
+    console.log("old Messages", incomingMessages)
+    setMessages((prev: SessionChatMessage[]) => {
+      const existingIds = new Set(prev.map((msg) => msg?.data?.messageId));
+  
+      const nonDuplicateMessages = incomingMessages.filter(
+        (msg) => !existingIds.has(msg?.data?.messageId)
+      );
+  
+      return [...prev, ...nonDuplicateMessages];
     });
   };
 

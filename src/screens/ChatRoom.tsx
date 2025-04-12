@@ -10,6 +10,7 @@ const ChatRoom = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const userName = params.get("name") || "";
+  const isJoiningRoom = useRef(false);
 
   const {
     messages,
@@ -27,7 +28,8 @@ const ChatRoom = () => {
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!roomId && connectionState === "connected") {
+    if (!roomId && connectionState === "connected" && !isJoiningRoom.current) {
+      isJoiningRoom.current =  true;
       setTimeout(() => {
         existingRoomId && joinRoom(existingRoomId, userName);
       }, 3000);

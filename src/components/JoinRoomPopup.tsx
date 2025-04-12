@@ -24,6 +24,9 @@ const JoinRoomPopup = (props: any) => {
         <div>
           <label className="text-sm">Your Name</label>
           <Input
+            style={{
+              fontSize: "16px",
+            }}
             className="capitalize"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
@@ -33,10 +36,13 @@ const JoinRoomPopup = (props: any) => {
         <div className="mt-4">
           <label className="text-sm">Room Id</label>
           <Input
+            style={{
+              fontSize: "16px",
+            }}
             className="capitalize"
             value={roomId}
             onChange={(e) => setRoomId(e.target.value)}
-            placeholder="Enter your name"
+            placeholder="Enter room id"
           />
         </div>
       </div>

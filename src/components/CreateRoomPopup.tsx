@@ -25,6 +25,9 @@ const CreateRoomPopup = (props: Props) => {
       <div className="mt-6">
         <label className="text-sm">Your Name</label>
         <Input
+          style={{
+            fontSize: "16px",
+          }}
           className="capitalize"
           value={userName}
           onChange={onNameChange}

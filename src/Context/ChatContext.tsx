@@ -36,6 +36,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // console.log(messages, 'MESSAGES')
 
+  useEffect(() => {
+    return () => client?.teardown();
+  }, [])
+
   const handleReceivedMessage = (message: any) => {
 
     if (message.type === "userId") {
@@ -59,7 +63,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsConnectionState("connected");
     },
     onClose: () => {
-      setIsConnectionState("");
+      setIsConnectionState("disconnected");
     },
     onMessage: handleReceivedMessage,
   };
@@ -91,14 +95,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
-  // const joinRoom = async(roomId: string, name: string) => {
-  //   setUserData((prev: any) => ({ ...prev, name: name }));
-  //   const resp = await client?.joinChatRoom(name, roomId);
-  //   const oldMessages = resp?.messages.map(msg => ({data: msg})) || [];
-  //   // const oldMessages = []
-  //   console.table("oldMessages", oldMessages)
-  //   setMessages((prev: SessionChatMessage[]) => [...oldMessages, ...prev])
-  // };
 
   const setTypingPresence = (value: boolean) => {
     client?.sendMessage(SocketMessageTypes.SET_TYPING_PRESENCE, {
@@ -120,7 +116,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         (msg) => !existingIds.has(msg?.data?.messageId)
       );
   
-      return [...prev, ...nonDuplicateMessages];
+      return [ ...nonDuplicateMessages, ...prev];
     });
   };
 

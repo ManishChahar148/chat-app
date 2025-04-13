@@ -34,12 +34,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [typingData, setTypingData] = useState<any>();
   const [userList, setUserList] = useState([]);
 
-  // console.log(messages, 'MESSAGES')
-
-  useEffect(() => {
-    return () => client?.teardown();
-  }, [])
-
   const handleReceivedMessage = (message: any) => {
 
     if (message.type === "userId") {
@@ -72,6 +66,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     const newClient = new TelepartyClient(eventHandler);
     setIsConnectionState("connecting");
     setClient(newClient);
+
+    return () => client?.teardown();
   }, []);
 
   const createChat = (userName: string) => {

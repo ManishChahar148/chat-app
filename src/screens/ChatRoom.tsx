@@ -3,6 +3,7 @@ import { useChat } from "../Context/ChatContext";
 import { useLocation, useParams } from "react-router-dom";
 // import { Button } from "../components/Button";
 import { Button, Input } from "antd";
+import RefreshWindowPopup from "../components/RefreshWindowPopup";
 
 const ChatRoom = () => {
   const [messageInput, setMessageInput] = useState("");
@@ -148,6 +149,7 @@ const ChatRoom = () => {
           </Button>
         </form>
       </div>
+      <RefreshWindowPopup isDisconnected={connectionState === 'disconnected'}/>
     </div>
   );
 };

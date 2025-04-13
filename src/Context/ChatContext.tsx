@@ -58,6 +58,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     onClose: () => {
       setIsConnectionState("disconnected");
+      console.log("Socket closed");
     },
     onMessage: handleReceivedMessage,
   };

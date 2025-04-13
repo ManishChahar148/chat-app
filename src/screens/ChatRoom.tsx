@@ -52,9 +52,6 @@ const ChatRoom = () => {
     sendMessage(messageInput);
     setMessageInput("");
   };
-  const onlyCurrentUserTyping =
-    typingData?.usersTyping?.length === 1 &&
-    typingData?.usersTyping?.includes(userData?.data?.userId);
 
   const isChatConnecting =
     connectionState === "connecting" || messages.length === 0;

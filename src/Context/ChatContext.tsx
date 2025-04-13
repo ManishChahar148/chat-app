@@ -107,10 +107,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     const incomingMessages = resp?.messages.map((msg) => ({ data: msg })) || [];
     console.log("old Messages", incomingMessages)
     setMessages((prev: SessionChatMessage[]) => {
-      const existingIds = new Set(prev.map((msg) => msg?.data?.messageId));
+      const existingIds = new Set(prev.map((msg: any) => msg?.data?.messageId));
   
       const nonDuplicateMessages = incomingMessages.filter(
-        (msg) => !existingIds.has(msg?.data?.messageId)
+        (msg: any) => !existingIds.has(msg?.data?.messageId)
       );
   
       return [ ...nonDuplicateMessages, ...prev];
